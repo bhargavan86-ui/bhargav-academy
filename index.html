@@ -242,6 +242,72 @@ footer{background:var(--navy-deep);padding:48px 0 24px;border-top:2px solid rgba
 .review-stars{color:var(--gold-light);font-size:18px;margin-bottom:12px;letter-spacing:2px}
 .review-card p{font-size:14px;color:rgba(255,255,255,.8);line-height:1.7;font-style:italic;margin-bottom:16px}
 .review-author{font-size:12.5px;color:rgba(255,255,255,.5);font-weight:600}
+
+/* ══ MOBILE OPTIMISATION ══════════════════════════════════════ */
+@media(max-width:768px){
+  /* Hero */
+  .hero-grid{padding:40px 20px 60px;gap:32px}
+  .hero h1{font-size:32px;line-height:1.12}
+  .hero-sub{font-size:15px}
+  .hero-stats{gap:20px}
+  .hstat-val{font-size:22px}
+  .hero-btns{flex-direction:column;gap:10px}
+  .btn-primary,.btn-secondary{text-align:center;padding:14px 24px}
+  .hero-photo-frame img{height:280px}
+
+  /* Sections */
+  section{padding:60px 0}
+  .container{padding:0 16px}
+  .section-title{font-size:26px}
+
+  /* About */
+  .about-grid{gap:32px}
+  .cred-list{gap:10px}
+
+  /* Why */
+  .why-grid{grid-template-columns:1fr;gap:14px}
+  .why-card{padding:20px 18px}
+
+  /* Programs */
+  .programs-grid{gap:14px}
+  .prog-card{padding:24px 20px}
+
+  /* Results */
+  .results-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .rs-score{font-size:18px}
+
+  /* GATE */
+  .gate-intro{padding:24px;gap:16px;flex-direction:column;text-align:center}
+  .gate-num{font-size:56px}
+  .gate-item{grid-template-columns:1fr;gap:6px}
+  .gi-inst-badge{text-align:left}
+
+  /* Reviews */
+  section .container div[style*="grid-template-columns:repeat(3"]{
+    display:flex!important;flex-direction:column!important;gap:14px!important
+  }
+
+  /* Contact */
+  .contact-grid{gap:32px}
+  .enroll-form{padding:24px 20px}
+  .form-grid{grid-template-columns:1fr}
+
+  /* Nav */
+  .nav-inner{padding:0 16px}
+
+  /* Footer */
+  .footer-top{flex-direction:column;gap:24px}
+  .footer-bottom{flex-direction:column;gap:4px;text-align:center}
+}
+
+@media(max-width:480px){
+  .results-grid{grid-template-columns:1fr}
+  .hero-stats{gap:14px}
+  .hstat{padding-left:10px}
+  .hstat-val{font-size:20px}
+  .gate-intro{padding:20px}
+}
+
 </style>
 </head>
 <body>
@@ -757,16 +823,45 @@ const obs = new IntersectionObserver((entries)=>{
 },{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-// Form submit
+// Form submit → WhatsApp with all details
 function handleSubmit(e){
   e.preventDefault();
-  const btn = e.target.querySelector('.submit-btn');
-  btn.textContent = '✓ Enquiry Sent!';
+  const parentName  = document.getElementById('parentName').value.trim();
+  const studentName = document.getElementById('studentName').value.trim();
+  const phone       = document.getElementById('phone').value.trim();
+  const classVal    = document.getElementById('classVal').value.trim();
+  const subjects    = document.getElementById('subjects').value.trim();
+  const message     = document.getElementById('message').value.trim();
+
+  const msg = [
+    '🎓 *New Enquiry — Bhargav Academy*',
+    '',
+    '👤 *Parent Name:* ' + parentName,
+    '👦 *Student Name:* ' + studentName,
+    '📞 *Phone:* ' + phone,
+    '🏫 *Class:* ' + classVal,
+    '📚 *Subjects:* ' + subjects,
+    message ? '💬 *Message:* ' + message : '',
+    '',
+    '_Sent from bhargavacademy.com_'
+  ].filter(Boolean).join('\n');
+
+  const encoded = encodeURIComponent(msg);
+  const waUrl = 'https://wa.me/918074474524?text=' + encoded;
+
+  const btn = document.getElementById('submitBtn');
+  btn.innerHTML = '✓ Opening WhatsApp...';
   btn.style.background = '#1A5C35';
   btn.disabled = true;
+
+  setTimeout(()=>{ window.open(waUrl, '_blank'); }, 600);
+
   setTimeout(()=>{
-    window.open('https://wa.me/918074474524?text=Hello%2C%20I%20just%20filled%20the%20enquiry%20form%20on%20your%20website%20and%20would%20like%20to%20know%20more%20about%20Bhargav%20Academy.','_blank');
-  },800);
+    btn.innerHTML = '<span>Send via WhatsApp →</span>';
+    btn.style.background = '';
+    btn.disabled = false;
+    document.getElementById('enrollForm').reset();
+  }, 4000);
 }
 </script>
 </body>
